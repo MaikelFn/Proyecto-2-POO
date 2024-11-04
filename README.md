@@ -1,2 +1,3 @@
 # Proyecto-2-POO
-Explorador de archivos
+##Integrantes
+###Tayler Wynta Rodríguez 2024143103
