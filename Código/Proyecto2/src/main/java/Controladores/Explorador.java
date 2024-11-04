@@ -14,39 +14,39 @@ import java.text.SimpleDateFormat;
 
 public class Explorador extends JPanel {
 
-    private JTree fileTree;
-    private JLabel rutaLabel; // JLabel para la ruta actual
-    private JTable fileTable; // JTable para mostrar detalles de los archivos
-    private DefaultTableModel tableModel; // Modelo para el JTable
+    private JTree JTreeArbolDeArchivos;
+    private JLabel LabelRutaActual; // JLabel para la ruta actual
+    private JTable ContenidoTabla; // JTable para mostrar detalles de los archivos
+    private DefaultTableModel Tabla; // Modelo para el JTable
 
     public Explorador(String rootPath) {
         setLayout(new BorderLayout());
 
         // Crear el JLabel para mostrar la ruta actual y añadirlo
-        rutaLabel = new JLabel("Ruta actual: " + rootPath);
-        add(rutaLabel, BorderLayout.NORTH);
+        LabelRutaActual = new JLabel("Ruta actual: " + rootPath);
+        add(LabelRutaActual, BorderLayout.NORTH);
 
         // Crear el árbol de archivos y añadirlo al panel
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootPath);
-        fileTree = new JTree(root);
-        JScrollPane treeScrollPane = new JScrollPane(fileTree);
+        JTreeArbolDeArchivos = new JTree(root);
+        JScrollPane treeScrollPane = new JScrollPane(JTreeArbolDeArchivos);
 
         // Crear el JTable para mostrar detalles de los archivos
-        tableModel = new DefaultTableModel(new String[]{"Nombre", "Tamaño", "Tipo", "Fecha de creación"}, 0);
-        fileTable = new JTable(tableModel);
-        JScrollPane tableScrollPane = new JScrollPane(fileTable);
+        Tabla = new DefaultTableModel(new String[]{"Nombre", "Tamaño", "Tipo", "Fecha de creación"}, 0);
+        ContenidoTabla = new JTable(Tabla);
+        JScrollPane tableScrollPane = new JScrollPane(ContenidoTabla);
 
         // Añadir ambos componentes en un JSplitPane para dividir la interfaz
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, tableScrollPane);
-        splitPane.setDividerLocation(350); // Tamaño del divisor
+        splitPane.setDividerLocation(300); // Tamaño del divisor
         add(splitPane, BorderLayout.CENTER);
 
         // Cargar archivos desde la carpeta raíz especificada
         File fileRoot = new File(rootPath);
-        createNodes(root, fileRoot);
+        crearNodos(root, fileRoot);
 
         // Añadir un listener para actualizar la ruta en el JLabel y la tabla al seleccionar un nodo/archivo
-        fileTree.addTreeSelectionListener(new TreeSelectionListener() {
+        JTreeArbolDeArchivos.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 TreePath path = e.getPath();
@@ -58,32 +58,32 @@ public class Explorador extends JPanel {
                 }
 
                 // Actualizar el JLabel con la ruta actual 
-                rutaLabel.setText("Ruta actual: " + fullPath.toString());
+                LabelRutaActual.setText("Ruta actual: " + fullPath.toString());
 
                 // Actualizar la tabla con los detalles del archivo o carpeta seleccionada
-                updateFileTable(new File(fullPath.toString()));
+                actualizarTabla(new File(fullPath.toString()));
             }
         });
     }
 
     // Crear los nodos del árbol de archivos
-    private void createNodes(DefaultMutableTreeNode node, File fileRoot) {
+    private void crearNodos(DefaultMutableTreeNode node, File fileRoot) {
         File[] files = fileRoot.listFiles();
         if (files != null) {
             for (File file : files) {
                 DefaultMutableTreeNode child = new DefaultMutableTreeNode(file.getName());
                 node.add(child);
                 if (file.isDirectory()) {
-                    createNodes(child, file);
+                    crearNodos(child, file);
                 }
             }
         }
     }
 
     // Actualizar la tabla con los detalles del archivo o carpeta seleccionada
-    private void updateFileTable(File folder) {
+    private void actualizarTabla(File folder) {
         // Limpiar la tabla antes de agregar nuevos datos
-        tableModel.setRowCount(0);
+        Tabla.setRowCount(0);
 
         if (folder.isDirectory()) {
             // Si se selecciona una carpeta, mostrar el número de elementos
@@ -101,38 +101,38 @@ public class Explorador extends JPanel {
                         fileCount++;
                         String name = file.getName();
                         String size = file.length() + " bytes";
-                        String type = getFileExtension(file);
-                        String creationDate = getFileCreationDate(file, sdf);
+                        String type = getExtension(file);
+                        String creationDate = getFechaCreacion(file, sdf);
 
                         // Agregar fila con los detalles del archivo
-                        tableModel.addRow(new Object[]{name, size, type, creationDate});
+                        Tabla.addRow(new Object[]{name, size, type, creationDate});
                     }
                 }
 
                 // Si la carpeta tiene archivos, mostrar el número de archivos
-                tableModel.addRow(new Object[]{"Carpeta: " + folder.getName(), fileCount + " archivos, " + folderCount + " carpetas", "", ""});
+                Tabla.addRow(new Object[]{"Carpeta: " + folder.getName(), fileCount + " archivos, " + folderCount + " carpetas", "", ""});
             }
         } else {
             // Si se selecciona un archivo, mostrar sus detalles
             String name = folder.getName();
             String size = folder.length() + " bytes";
-            String type = getFileExtension(folder);
-            String creationDate = getFileCreationDate(folder, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
+            String type = getExtension(folder);
+            String creationDate = getFechaCreacion(folder, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
 
             // Agregar fila con los detalles del archivo
-            tableModel.addRow(new Object[]{name, size, type, creationDate});
+            Tabla.addRow(new Object[]{name, size, type, creationDate});
         }
     }
 
     // Obtener la extensión del archivo
-    private String getFileExtension(File file) {
+    private String getExtension(File file) {
         String name = file.getName();
         int lastIndexOfDot = name.lastIndexOf('.');
         return (lastIndexOfDot > 0) ? name.substring(lastIndexOfDot + 1).toUpperCase() : "Sin extensión";
     }
 
     // Obtener la fecha de creación
-    private String getFileCreationDate(File file, SimpleDateFormat sdf) {
+    private String getFechaCreacion(File file, SimpleDateFormat sdf) {
         String creationDate = "-";
         try {
             BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);

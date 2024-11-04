@@ -1,20 +1,20 @@
 package GUI;
 
-import Controladores.Controlador_GUI;
+import Controladores.RutaInicial;
 import javax.swing.JPanel;
 
-public class Directorio_C extends javax.swing.JFrame {
+public class Directorios extends javax.swing.JFrame {
 
-    private Controlador_GUI controlador;
+    private RutaInicial controlador;
     
-    public Directorio_C() {
+    public Directorios() {
         initComponents();
         inicializarExplorador();
     }
 
     private void inicializarExplorador() {
         // Instancia el controlador y el explorador de archivos
-        controlador = new Controlador_GUI();
+        controlador = new RutaInicial();
         JPanel exploradorArchivos = controlador.crearExploradorDeArchivos();
 
         // Agrega el explorador a "Plantilla"
@@ -70,18 +70,18 @@ public class Directorio_C extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Directorio_C.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Directorios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Directorio_C.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Directorios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Directorio_C.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Directorios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Directorio_C.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Directorios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
          java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Directorio_C().setVisible(true);
+                new Directorios().setVisible(true);
             }
         });
     }

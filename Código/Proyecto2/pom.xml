@@ -16,6 +16,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
-        <exec.mainClass>GUI.Directorio_C</exec.mainClass>
+        <exec.mainClass>GUI.Directorios</exec.mainClass>
     </properties>
 </project>
