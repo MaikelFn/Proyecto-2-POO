@@ -8,16 +8,18 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
+import java.nio.file.*;
 
 public class Explorador extends JPanel {
 
-    private JTree JTreeArbolDeArchivos;
+    private final JTree JTreeArbolDeArchivos;
     private JLabel LabelRutaActual; // JLabel para la ruta actual
-    private JTable ContenidoTabla; // JTable para mostrar detalles de los archivos
-    private DefaultTableModel Tabla; // Modelo para el JTable
+    private final JTable ContenidoTabla; // JTable para mostrar detalles de los archivos
+    private final DefaultTableModel Tabla; // Modelo para el JTable
 
     public Explorador(String rootPath) {
         setLayout(new BorderLayout());
@@ -137,9 +139,38 @@ public class Explorador extends JPanel {
         try {
             BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
             creationDate = sdf.format(attrs.creationTime().toMillis());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
         }
         return creationDate;
     }
+    
+   public boolean crearDirectorio(String path, String nombre) {
+    File nuevoDirectorio = new File(path, nombre);
+    if (!nuevoDirectorio.exists()) {
+        return nuevoDirectorio.mkdir();
+    }
+    return false; // El directorio ya existe
+  }
+   
+  public boolean eliminarArchivo(String path) {
+    File archivo = new File(path);
+    return archivo.isFile() && archivo.delete();
+  }
+  
+  public boolean eliminarDirectorio(String path) {
+    File directorio = new File(path);
+    return directorio.isDirectory() && directorio.delete();
+  }
+
+  public boolean copiarArchivo(String sourcePath, String destinationPath) {
+    try {
+        Path source = Paths.get(sourcePath);
+        Path destination = Paths.get(destinationPath);
+        Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+        return true;
+    } catch (IOException e) {
+        return false;
 }
+  }
+}
+
